@@ -10,6 +10,66 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const employeesArray = [];
+
+function managerDetails() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the Manager's name?",
+            name: "name"
+        },
+        {
+            type: "input",
+            message: "What is the Manager's ID?",
+            name: "id"
+        },
+        {
+            type: "input",
+            message: "What is the Manager's email address?",
+            name: "email"
+        },
+        {
+            type: "input",
+            message: "What is the Manager's office number?",
+            name: "officeNumber"
+        }
+    ]).then(managerInfo => {
+        employeesArray.push(new Manager(managerInfo.name, managerInfo.id, managerInfo.email, managerInfo.officeNumber))
+        console.log(employeesArray)
+        addEmployee();
+    })
+}
+
+function addEmployee() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: `Your team currently has ${employeesArray.length} members. Would you like to add another employee?`,
+            name: "addEmployee",
+            choices: [
+                "Yes",
+                "No, Generate Team Profile Now"
+            ]
+        }
+    ]).then(answer => {
+        if (answer.addEmployee == true) {
+            console.log("RUN EMPLOYEE SELECTOR HERE");
+        }
+        else {
+            console.log("GENERATE HTML HERE");
+        }
+    })
+}
+
+function init() {
+    console.log(
+        `Team Profile Generator v1.0 \n Enter the details for your team one by one, then select 'No, Generate Team Profile Now' to create a HTML file. \n ${"-".repeat(50)}`
+    );
+    managerDetails();
+}
+
+init();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
