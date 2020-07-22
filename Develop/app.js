@@ -12,7 +12,7 @@ const render = require("./lib/htmlRenderer");
 
 const employeesArray = [];
 
-function managerDetails() {
+function addManager() {
     inquirer.prompt([
         {
             type: "input",
@@ -46,15 +46,15 @@ function addEmployee() {
         {
             type: "list",
             message: `Your team currently has ${employeesArray.length} members. Would you like to add another employee?`,
-            name: "addEmployee",
             choices: [
                 "Yes",
                 "No, Generate Team Profile Now"
-            ]
+            ],
+            name: "addEmployee"
         }
     ]).then(answer => {
-        if (answer.addEmployee == true) {
-            console.log("RUN EMPLOYEE SELECTOR HERE");
+        if (answer.addEmployee == "Yes") {
+            employeeSelector();
         }
         else {
             console.log("GENERATE HTML HERE");
@@ -62,11 +62,93 @@ function addEmployee() {
     })
 }
 
+function employeeSelector() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What is the employee's role?",
+            choices: [
+                "Engineer",
+                "Intern"
+            ],
+            name: "role",
+        }
+    ]).then(newEmployee => {
+        if (newEmployee.role == "Engineer") {
+            addEngineer();
+        }
+        else if (newEmployee.role == "Intern"){
+            addIntern();
+        }
+        else {
+            console.log("ERROR! Please exit the application and try again.")
+        }
+    })    
+}
+
+function addEngineer() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the Engineer's name?",
+            name: "name"
+        },
+        {
+            type: "input",
+            message: "What is the Engineer's ID?",
+            name: "id"
+        },
+        {
+            type: "input",
+            message: "What is the Engineer's email address?",
+            name: "email"
+        },
+        {
+            type: "input",
+            message: "What is the Engineer's GitHub username?",
+            name: "github"
+        }
+    ]).then(engineerInfo => {
+        employeesArray.push(new Engineer(engineerInfo.name, engineerInfo.id, engineerInfo.email, engineerInfo.github))
+        console.log(employeesArray)
+        addEmployee();
+    })
+}
+
+function addIntern() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the Intern's name?",
+            name: "name"
+        },
+        {
+            type: "input",
+            message: "What is the Intern's ID?",
+            name: "id"
+        },
+        {
+            type: "input",
+            message: "What is the Intern's email address?",
+            name: "email"
+        },
+        {
+            type: "input",
+            message: "Which school is the Intern from?",
+            name: "school"
+        }
+    ]).then(internInfo => {
+        employeesArray.push(new Intern(internInfo.name, internInfo.id, internInfo.email, internInfo.school))
+        console.log(employeesArray)
+        addEmployee();
+    })
+}
+
 function init() {
     console.log(
         `Team Profile Generator v1.0 \n Enter the details for your team one by one, then select 'No, Generate Team Profile Now' to create a HTML file. \n ${"-".repeat(50)}`
     );
-    managerDetails();
+    addManager();
 }
 
 init();
