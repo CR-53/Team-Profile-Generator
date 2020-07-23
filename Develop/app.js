@@ -10,8 +10,10 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+// Array to store the employee data in
 const employeesArray = [];
 
+// Inquirer prompts for a manager
 function addManager() {
     inquirer.prompt([
         {
@@ -36,16 +38,18 @@ function addManager() {
         }
     ]).then(managerInfo => {
         employeesArray.push(new Manager(managerInfo.name, managerInfo.id, managerInfo.email, managerInfo.officeNumber))
-        console.log(employeesArray)
         addEmployee();
     })
 }
 
+// Inquirer prompts to add another employee or generate the HTML
 function addEmployee() {
+    console.log(`Your team currently has ${employeesArray.length} members:`);
+    console.log(employeesArray);
     inquirer.prompt([
         {
             type: "list",
-            message: `Your team currently has ${employeesArray.length} members. Would you like to add another employee?`,
+            message: `Would you like to add another employee?`,
             choices: [
                 "Yes",
                 "No, Generate Team Profile Now"
@@ -57,11 +61,13 @@ function addEmployee() {
             employeeSelector();
         }
         else {
-            console.log("GENERATE HTML HERE");
+            generateHTML();
+            console.log(`Your team profile has now been created in './output/team.htm'`)
         }
     })
 }
 
+// Inquirer prompts to select the type of employee to add
 function employeeSelector() {
     inquirer.prompt([
         {
@@ -86,6 +92,7 @@ function employeeSelector() {
     })    
 }
 
+// Inquirer prompts for an engingeer
 function addEngineer() {
     inquirer.prompt([
         {
@@ -110,11 +117,11 @@ function addEngineer() {
         }
     ]).then(engineerInfo => {
         employeesArray.push(new Engineer(engineerInfo.name, engineerInfo.id, engineerInfo.email, engineerInfo.github))
-        console.log(employeesArray)
         addEmployee();
     })
 }
 
+// Inquirer prompts for an intern
 function addIntern() {
     inquirer.prompt([
         {
@@ -139,11 +146,26 @@ function addIntern() {
         }
     ]).then(internInfo => {
         employeesArray.push(new Intern(internInfo.name, internInfo.id, internInfo.email, internInfo.school))
-        console.log(employeesArray)
+
         addEmployee();
     })
 }
 
+// Generates HTML and creates output path if one does not already exist
+function generateHTML() {
+    console.log(`Generating HTML...`);
+    const teamData = render(employeesArray);
+    if (fs.existsSync(outputPath) === true) {
+        console.log(`Output path located...`)
+    }
+    else {
+        console.log(`Generating output path...`);
+        fs.mkdirSync(OUTPUT_DIR);
+    }
+    fs.writeFileSync(outputPath, teamData);
+}
+
+// Function to start the app
 function init() {
     console.log(
         `Team Profile Generator v1.0 \n Enter the details for your team one by one, then select 'No, Generate Team Profile Now' to create a HTML file. \n ${"-".repeat(50)}`
@@ -153,8 +175,6 @@ function init() {
 
 init();
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
@@ -175,3 +195,4 @@ init();
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+
