@@ -3,6 +3,7 @@
 ## Description
 A command line application built using node.js to generate a team profile for an engineering team.   
 
+[Video showing the application from the user's perspective](https://vimeo.com/441614688)
 ![Team Profile](Assets/team-profile.png)
 
 
